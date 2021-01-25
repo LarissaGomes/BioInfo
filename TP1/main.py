@@ -46,9 +46,9 @@ def preenche_matriz(seq, blosum_dict):
 			#print("diagonal", matriz[i-1][j-1], int(blosum_dict.get(blosum_score)))
 			#print("")
 			# Retorna o valor da posição horizontal anterior, o valor do casamento da BLOSUM62 para a posição e a penalidade usada para a execução
-			horizontal = matriz[i-1][j] + int(blosum_dict.get(blosum_score)) + penalidade
+			horizontal = matriz[i-1][j]# + int(blosum_dict.get(blosum_score)) + penalidade
 			# Retorna o valor da posição vertical anterior, o valor do casamento da BLOSUM62 para a posição e a penalidade usada para a execução
-			vertical = matriz[i][j-1] + int(blosum_dict.get(blosum_score)) + penalidade
+			vertical = matriz[i][j-1] #+ int(blosum_dict.get(blosum_score)) + penalidade
 
 			# Se é um match na diagonal
 			if(seq[0][i-1]==seq[1][j-1]):
