@@ -27,8 +27,14 @@ def preenche_matriz(seq, blosum_dict):
 	# Vê o tamanho das sequências para criar a matriz
 	n = len(seq[0])+1	# adicionando v
 	m = len(seq[1])+1	# adicionando w
-	print(m, seq[0])
+	#print(m, seq[0])
 	matriz = numpy.zeros(shape=(n,m))
+	matrizDirecoes = []
+	for i in range(0,n):
+		linha = []
+		for j in range(0,m):
+			linha.append('')
+		matrizDirecoes.append(linha)
 
 	# Faz as operações 
 	penalidade = 0 
@@ -63,19 +69,45 @@ def preenche_matriz(seq, blosum_dict):
 			# Pega o valor máximo dentre os três calculados para preencher a posição na matriz com as prioridades propostas em aula
 			if (seq[0][i-1]==seq[1][j-1]):
 				matriz[i][j]=diagonal
+				matrizDirecoes[i][j]= '\\';
 			elif (diagonal>=vertical and diagonal>=horizontal):
 				matriz[i][j]=diagonal
+				matrizDirecoes[i][j]= '\\';
 			elif (horizontal>=vertical and horizontal>=horizontal):
 				matriz[i][j]=horizontal
+				matrizDirecoes[i][j]= '-';
 			else:
 				matriz[i][j]=vertical
+				matrizDirecoes[i][j]='|';
 			#matriz[i][j]=max(horizontal, vertical, diagonal)
 
-
-	return matriz
+	return matriz.transpose(), numpy.array(matrizDirecoes).transpose()
 
 # Função que calcula o algoritmo Needleman Wunsch
-def needleman_wunsch ():
+def needleman_wunsch (sequencia1, sequencia2, matriz, matrizDirecoes):
+	linhaAtual = len(sequencia2) 
+	colunaAtual = len(sequencia1)
+	sequencia1Alinhada= ""
+	sequencia2Alinhada= ""
+	while(linhaAtual != 0 and colunaAtual != 0):
+		if(matrizDirecoes[linhaAtual][colunaAtual] == '\\'):
+			sequencia1Alinhada = sequencia1[colunaAtual-1] + sequencia1Alinhada
+			sequencia2Alinhada = sequencia2[linhaAtual-1] + sequencia2Alinhada
+			linhaAtual -= 1
+			colunaAtual -= 1
+		elif(matrizDirecoes[linhaAtual][colunaAtual] == '-'):
+			sequencia1Alinhada = "_" + sequencia1Alinhada
+			sequencia2Alinhada = sequencia1[colunaAtual-1] + sequencia2Alinhada
+			colunaAtual -= 1
+		elif(matrizDirecoes[linhaAtual][colunaAtual] == '|'):
+			sequencia1Alinhada = sequencia2[linhaAtual-1] + sequencia1Alinhada
+			sequencia2Alinhada = "_" + sequencia2Alinhada
+			linhaAtual -= 1
+		else:
+			break
+
+	print(sequencia2Alinhada)
+	print(sequencia1Alinhada)
 	return
 
 # Pega o nome do arquivo direto dos parâmetros de execução
@@ -96,6 +128,5 @@ blosum_dict = get_blosum_dict(blosum62)
 #print(blosum_dict)
 #print(len(blosum_dict))
 
-matriz = preenche_matriz(seq, blosum_dict)
-print(matriz)
-
+matriz, matrizDirecoes = preenche_matriz(seq, blosum_dict)
+needleman_wunsch(seq[0],seq[1],matriz, matrizDirecoes)
