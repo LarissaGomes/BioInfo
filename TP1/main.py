@@ -1,5 +1,6 @@
 import sys
 import numpy
+import pandas as pd
 
 # Função para ler a matriz blosum62 de um txt e retornar um dicionário para comparações
 def get_blosum_dict(blosum62):
@@ -110,9 +111,23 @@ def needleman_wunsch (sequencia1, sequencia2, matriz, matrizDirecoes):
 	print(sequencia1Alinhada)
 	return
 
+def imprimirMatriz(matriz, matrizDirecoes,sequencia1, sequencia2):
+	matrizFinal = []
+	sequencia1Nova = "*"+sequencia1
+	sequencia2Nova = "*"+sequencia2
+	for i in range(len(matriz)):
+		matrizFinalLinha = []
+		for j in range(len(matriz[0])):
+			matrizFinalLinha.append(str(matriz[i][j])+str(matrizDirecoes[i][j]))
+		matrizFinal.append(matrizFinalLinha)
+	#print(matrizFinal)
+	df=pd.DataFrame(data=numpy.array(matrizFinal)[0:,0:],
+            index=[ sequencia2Nova[i-1] for i in range(1,numpy.array(matrizFinal).shape[0]+1)],
+          	 columns=[ sequencia1Nova[i-1] for i in range(1,numpy.array(matrizFinal).shape[1]+1)])
+	print(df)
 # Pega o nome do arquivo direto dos parâmetros de execução
 file = sys.argv[1]
-
+printMatriz = len(sys.argv) > 2
 # Abre o arquivo para ler as sequências
 f = open(file, 'r')
 
@@ -130,3 +145,5 @@ blosum_dict = get_blosum_dict(blosum62)
 
 matriz, matrizDirecoes = preenche_matriz(seq, blosum_dict)
 needleman_wunsch(seq[0],seq[1],matriz, matrizDirecoes)
+if(printMatriz):
+	imprimirMatriz(matriz,matrizDirecoes,seq[0],seq[1])
