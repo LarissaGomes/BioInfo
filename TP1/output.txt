@@ -1,0 +1,4 @@
+>sp|a|Sequencia_2_Alinhada
+DRNTAQ__AAGT_TTIT
+>sp|a|Sequencia_1_Alinhada
+DRQTAQLL__GTD_T_T

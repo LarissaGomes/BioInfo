@@ -1,5 +1,8 @@
 import sys
 import numpy
+import dash
+import dash_bio as dashbio
+import dash_html_components as html
 
 # Função para ler a matriz blosum62 de um txt e retornar um dicionário para comparações
 def get_blosum_dict(blosum62):
@@ -55,6 +58,9 @@ def preenche_matriz(seq, blosum_dict):
 			horizontal = matriz[i-1][j]# + int(blosum_dict.get(blosum_score)) + penalidade
 			# Retorna o valor da posição vertical anterior, o valor do casamento da BLOSUM62 para a posição e a penalidade usada para a execução
 			vertical = matriz[i][j-1] #+ int(blosum_dict.get(blosum_score)) + penalidade
+			#if (seq[0][i-1],seq[1][j-1] == '>'):
+			#	continue
+
 
 			# Se é um match na diagonal
 			if(seq[0][i-1]==seq[1][j-1]):
@@ -63,7 +69,9 @@ def preenche_matriz(seq, blosum_dict):
 			# Se mismatch na diagonal
 			else:
 				# Retorna o valor da posição diagonal anterior, o valor do casamento da BLOSUM62 para a posição e a penalidade usada para a execução
+
 				diagonal = matriz[i-1][j-1] + int(blosum_dict.get(blosum_score)) + penalidade
+
 			#print(horizontal, vertical, diagonal)
 
 			# Pega o valor máximo dentre os três calculados para preencher a posição na matriz com as prioridades propostas em aula
@@ -84,7 +92,8 @@ def preenche_matriz(seq, blosum_dict):
 	return matriz.transpose(), numpy.array(matrizDirecoes).transpose()
 
 # Função que calcula o algoritmo Needleman Wunsch
-def needleman_wunsch (sequencia1, sequencia2, matriz, matrizDirecoes):
+def needleman_wunsch (sequencia1, sequencia2, matriz, matrizDirecoes,output):
+
 	linhaAtual = len(sequencia2) 
 	colunaAtual = len(sequencia1)
 	sequencia1Alinhada= ""
@@ -106,16 +115,63 @@ def needleman_wunsch (sequencia1, sequencia2, matriz, matrizDirecoes):
 		else:
 			break
 
+	output.write(">sp|a|Sequencia_2_Alinhada\n")
+	output.write(sequencia2Alinhada + "\n")
+	output.write(">sp|a|Sequencia_1_Alinhada\n")
+	output.write(sequencia1Alinhada + "\n")
 	print(sequencia2Alinhada)
 	print(sequencia1Alinhada)
 	return
+
+# data = arquivo de entrada com as sequencias
+def visualiza_dados (data):
+	external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+	app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+	data = open(data).read()
+
+	app.layout = html.Div([
+    	dashbio.AlignmentChart(
+        	id='my-alignment-viewer',
+        	data=data,
+        	#showconservation=False,
+        	#showgap=False
+	        #tilewidth = 15,
+	        
+    	    tileheight = 15, 	
+        	#height= 400,
+        	#width = 800
+        	
+    	),
+    	html.Div(id='alignment-viewer-output')
+	])
+
+
+	@app.callback(
+    	dash.dependencies.Output('alignment-viewer-output', 'children'),
+    	[dash.dependencies.Input('my-alignment-viewer', 'eventDatum')]
+	)
+
+	def update_output(value):
+		if value is None:
+			return 'No data.'
+		return str(value)
+
+
+
+	if __name__ == '__main__':
+		app.run_server(debug=True)
+
+	return
+
+
 
 # Pega o nome do arquivo direto dos parâmetros de execução
 file = sys.argv[1]
 
 # Abre o arquivo para ler as sequências
 f = open(file, 'r')
-
+output = open("output.txt",'w')
 seq = []
 seq = (f.read().splitlines() )
 
@@ -129,4 +185,7 @@ blosum_dict = get_blosum_dict(blosum62)
 #print(len(blosum_dict))
 
 matriz, matrizDirecoes = preenche_matriz(seq, blosum_dict)
-needleman_wunsch(seq[0],seq[1],matriz, matrizDirecoes)
+needleman_wunsch(seq[0],seq[1],matriz, matrizDirecoes, output)
+output.close()
+
+visualiza_dados ("output.txt")
