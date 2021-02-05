@@ -1,13 +1,10 @@
 import sys
 import numpy
 import pandas as pd
-<<<<<<< HEAD
 import dash
 import dash_bio as dashbio
 import dash_html_components as html
-=======
 
->>>>>>> 456afcda2535b74b3e2a40af944cd0ab3f2ae26c
 
 # Função para ler a matriz blosum62 de um txt e retornar um dicionário para comparações
 def get_blosum_dict(blosum62):
@@ -128,7 +125,6 @@ def needleman_wunsch (sequencia1, sequencia2, matriz, matrizDirecoes,output):
 	print(sequencia1Alinhada)
 	return
 
-<<<<<<< HEAD
 # data = arquivo de entrada com as sequencias
 def visualiza_dados (data):
 	external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -172,7 +168,6 @@ def visualiza_dados (data):
 
 
 
-=======
 def imprimirMatriz(matriz, matrizDirecoes,sequencia1, sequencia2):
 	matrizFinal = []
 	sequencia1Nova = "*"+sequencia1
@@ -187,7 +182,7 @@ def imprimirMatriz(matriz, matrizDirecoes,sequencia1, sequencia2):
             index=[ sequencia2Nova[i-1] for i in range(1,numpy.array(matrizFinal).shape[0]+1)],
           	 columns=[ sequencia1Nova[i-1] for i in range(1,numpy.array(matrizFinal).shape[1]+1)])
 	print(df)
->>>>>>> 456afcda2535b74b3e2a40af944cd0ab3f2ae26c
+
 # Pega o nome do arquivo direto dos parâmetros de execução
 file = sys.argv[1]
 printMatriz = len(sys.argv) > 2
@@ -207,13 +202,16 @@ blosum_dict = get_blosum_dict(blosum62)
 #print(len(blosum_dict))
 
 matriz, matrizDirecoes = preenche_matriz(seq, blosum_dict)
-<<<<<<< HEAD
+
 needleman_wunsch(seq[0],seq[1],matriz, matrizDirecoes, output)
 output.close()
 
-visualiza_dados ("output.txt")
-=======
-
 if(printMatriz):
 	imprimirMatriz(matriz,matrizDirecoes,seq[0],seq[1])
->>>>>>> 456afcda2535b74b3e2a40af944cd0ab3f2ae26c
+
+
+visualiza_dados ("output.txt")
+
+
+
+
