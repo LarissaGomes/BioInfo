@@ -1,6 +1,7 @@
 import sys
 import numpy
 import pandas as pd
+#visualizacao grafica
 import dash
 import dash_bio as dashbio
 import dash_html_components as html
@@ -136,12 +137,11 @@ def visualiza_dados (data):
     	dashbio.AlignmentChart(
         	id='my-alignment-viewer',
         	data=data,
-        	#showconservation=False,
-        	#showgap=False
-	        #tilewidth = 15,
-	        
-    	    tileheight = 15, 	
-        	#height= 400,
+        	showconservation=False,
+        	showgap=False,
+	        #tilewidth = 15,	        
+    	    tileheight = 15,
+        	height= 300
         	#width = 800
         	
     	),
